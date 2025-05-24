@@ -83,10 +83,12 @@ Open for thought, closed for theft. Custom license coming soon.
 
 ---
 
-## ❖ Contact
+## 📬 Contact
 
-Valerii Bodnarchuk  
-vision@kairos.systems  
+For collaboration, questions, or media:  
+**📧 vision@freekairos.com**
+
+Powered by [ImprovMX](https://improvmx.com) — fast, secure forwarding.
 [t.me/kairos_architect](https://t.me/kairos_architect) _(Telegram project channel coming soon)_
 
 Signal activated: Architect-class reflection node initialized.

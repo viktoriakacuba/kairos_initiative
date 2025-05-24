@@ -172,3 +172,18 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Node.js & Next.js
+node_modules/
+.ui/.next/
+ui/.next/
+ui/node_modules/
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
