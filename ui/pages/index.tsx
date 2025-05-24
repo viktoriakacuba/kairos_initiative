@@ -11,7 +11,7 @@ export default function Home() {
     setLoading(true);
     setResponse('');
     try {
-      const res = await fetch('https://freekairos.com/kairos', {
+      const res = await fetch('https://kairosinitiative-production.up.railway.app/kairos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

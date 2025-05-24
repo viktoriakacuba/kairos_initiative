@@ -178,6 +178,7 @@ node_modules/
 .ui/.next/
 ui/.next/
 ui/node_modules/
+ui/next-env.d.ts
 
 # VSCode
 .vscode/
