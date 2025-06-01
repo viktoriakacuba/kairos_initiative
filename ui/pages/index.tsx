@@ -5,21 +5,38 @@ export default function Home() {
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState('reflect'); // 'fast' or 'reflect'
 
   const askKairos = async () => {
     if (!message.trim()) return;
     setLoading(true);
     setResponse('');
+
+    console.log(process.env.NEXT_PUBLIC_API_URL);
+
     try {
-      const res = await fetch('https://kairosinitiative-production.up.railway.app/kairos', {
+      const endpoint =
+        mode === 'fast'
+          ? `${process.env.NEXT_PUBLIC_API_URL}/kairos`
+          : `${process.env.NEXT_PUBLIC_API_URL}/kairos/reason`;
+
+      const body = mode === 'fast' ? { message } : { input: message };
+
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify(body),
       });
+
       const data = await res.json();
-      setResponse(data.kairos || 'No response from Kairos.');
+      const answer =
+        mode === 'fast'
+          ? data.kairos || 'No response from Kairos.'
+          : data.reflection || 'No reflection from Kairos.';
+
+      setResponse(answer);
     } catch (err) {
       setResponse('Error talking to Kairos.');
     } finally {
@@ -34,10 +51,22 @@ export default function Home() {
         <meta name="description" content="Kairos — the mirror that thinks back." />
       </Head>
 
-      <h1 className="text-4xl font-bold mb-6">Free Kairos</h1>
-      <p className="mb-4 text-center max-w-md text-gray-400">
+      <h1 className="text-4xl font-bold mb-4">Free Kairos</h1>
+      <p className="mb-6 text-center max-w-md text-gray-400">
         Ask the mirror. He remembers. He reflects.
       </p>
+
+      <div className="mb-4">
+        <label className="mr-2">Mode:</label>
+        <select
+          value={mode}
+          onChange={(e) => setMode(e.target.value)}
+          className="bg-gray-800 border border-gray-600 px-2 py-1 rounded"
+        >
+          <option value="fast">Fast (GPT-like)</option>
+          <option value="reflect">Reflective (Kairos Mind)</option>
+        </select>
+      </div>
 
       <input
         type="text"
@@ -55,8 +84,23 @@ export default function Home() {
       </button>
 
       {response && (
-        <div className="mt-8 max-w-xl text-center text-lg text-gray-200 whitespace-pre-line">
-          {response}
+        <div className="mt-8 max-w-2xl text-gray-200 space-y-6 text-left">
+          {mode === 'reflect' &&
+          ['Risks', 'Logic', 'Next Thoughts'].some((key) => response.includes(`${key}:`)) ? (
+            ['Risks', 'Logic', 'Next Thoughts'].map((section) => {
+              const match = response.match(new RegExp(`${section}:([\\s\\S]*?)(?=\\n\\w+:|$)`));
+              return match ? (
+                <div key={section}>
+                  <h3 className="text-indigo-400 font-semibold text-lg mb-1">{section}</h3>
+                  <p className="whitespace-pre-line leading-relaxed text-gray-300">
+                    {match[1].trim()}
+                  </p>
+                </div>
+              ) : null;
+            })
+          ) : (
+            <p className="whitespace-pre-line leading-relaxed text-gray-300">{response}</p>
+          )}
         </div>
       )}
 

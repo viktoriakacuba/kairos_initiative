@@ -4,8 +4,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from core.memory import init_db, save_interaction
 from core.agent import generate_response
+from reasoning_flow.loop import run_reasoning_loop
+from pydantic import BaseModel
 
 app = FastAPI()
+
+class ThoughtRequest(BaseModel):
+    input: str
 
 app.add_middleware(
     CORSMiddleware,
@@ -36,3 +41,8 @@ async def chat_kairos(request: Request):
         return {"kairos": response}
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
+
+@app.post("/kairos/reason")
+def reason_through_input(request: ThoughtRequest):
+    result = run_reasoning_loop(request.input)
+    return result
