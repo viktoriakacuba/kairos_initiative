@@ -1,11 +1,13 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from core.profile import get_mock_user
 
 from core.memory import init_db, save_interaction
 from core.agent import generate_response
 from reasoning_flow.loop import run_reasoning_loop
 from pydantic import BaseModel
+from core.profile import get_mock_user, UserProfile
 
 app = FastAPI()
 
@@ -46,3 +48,7 @@ async def chat_kairos(request: Request):
 def reason_through_input(request: ThoughtRequest):
     result = run_reasoning_loop(request.input)
     return result
+
+@app.get("/profile", response_model=UserProfile)
+def read_profile():
+    return get_mock_user()
