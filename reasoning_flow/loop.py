@@ -1,11 +1,11 @@
 from core.llm import call_llm
-from core.memory import save_interaction, get_last_n
+from core.memory import get_last_n
 
-def run_reasoning_loop(user_input: str) -> dict:
+def run_reasoning_loop(user_input: str, user_id: str) -> dict:
     steps = []
 
     # Step 0: Подгружаем последние размышления (контекст)
-    recent_memory = get_last_n(3)
+    recent_memory = get_last_n(user_id, 3)
     context_str = "\n".join([f"Q: {q}\nA: {a}" for q, a in recent_memory])
 
     # Step 1: Интерпретация цели
@@ -22,9 +22,6 @@ def run_reasoning_loop(user_input: str) -> dict:
     prompt_reflection = f"Goal: {goal}\nPlan: {plan}\nNow reflect on it: risks, logic, next thoughts."
     reflection = call_llm(prompt_reflection)
     steps.append({"step": "Reflection", "output": reflection})
-
-    # Step 4: Сохраняем размышление в память
-    save_interaction(user_input, reflection)
 
     return {
         "input": user_input,

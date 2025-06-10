@@ -28,6 +28,7 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
+        credentials: 'include',
       });
 
       const data = await res.json();

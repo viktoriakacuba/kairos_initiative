@@ -14,8 +14,8 @@ openai.api_key = api_key
 with open("core/kairos.json", encoding="utf-8") as f:
     archetype = json.load(f)
 
-def generate_response(message: str) -> str:
-    history = get_last_n()
+def generate_response(message: str, user_id: str) -> str:
+    history = get_last_n(user_id)
     context = "".join([f"User: {user}\nKairos: {reply}\n" for user, reply in history])
 
     prompt = (

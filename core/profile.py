@@ -9,12 +9,12 @@ class UserProfile(BaseModel):
     memory_enabled: bool = False
     archetype_id: str = "kairos"
 
-# Мок — позже заменим на real auth
-def get_mock_user() -> UserProfile:
+def get_user_by_id(user_id: str) -> UserProfile:
     return UserProfile(
-        id=1,
-        email="mock@kairos.ai",
+        id=int(user_id), 
+        email="anonymous@kairos.ai",
         mode=Mode.DEFAULT,
         is_subscribed=False,
-        memory_enabled=False
+        memory_enabled=False,
+        archetype_id="kairos"
     )
