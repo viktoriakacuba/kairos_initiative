@@ -1,4 +1,3 @@
-// pages/api/kairos.ts
 export default async function handler(req, res) {
     const { method, query } = req;
   
@@ -7,9 +6,10 @@ export default async function handler(req, res) {
     }
   
     const { message, input } = req.body;
+    const user_id = 'public-user';
     const mode = query.mode || 'fast';
   
-    const payload = mode === 'fast' ? { message } : { input };
+    const payload = mode === 'fast' ? { message, user_id } : { input, user_id };
   
     const targetUrl =
       mode === 'fast'
