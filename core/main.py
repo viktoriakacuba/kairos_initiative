@@ -24,6 +24,14 @@ app.add_middleware(
 
 init_db()
 
+@app.options("/kairos")
+async def options_kairos():
+    return FastAPIResponse(status_code=204, headers={
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+    })
+
 @app.post("/kairos")
 async def chat_kairos(request: Request):
     if request.headers.get("content-type") != "application/json":
@@ -47,6 +55,14 @@ async def chat_kairos(request: Request):
         return {"kairos": response}
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
+
+@app.options("/kairos/reason")
+async def options_kairos_reason():
+    return FastAPIResponse(status_code=204, headers={
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+    })
 
 @app.post("/kairos/reason")
 def reason_through_input(request: ThoughtRequest, response: Response, user_id: str = Cookie(default=None)):
