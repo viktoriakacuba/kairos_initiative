@@ -1,29 +1,33 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
+// pages/api/kairos.ts
+export default async function handler(req, res) {
+    const { method, query } = req;
+  
+    if (method !== 'POST') {
+      return res.status(405).json({ error: 'Method Not Allowed' });
+    }
+  
+    const { message, input } = req.body;
+    const mode = query.mode || 'fast';
+  
+    const payload = mode === 'fast' ? { message } : { input };
+  
+    const targetUrl =
+      mode === 'fast'
+        ? 'https://kairosinitiative-production.up.railway.app/kairos'
+        : 'https://kairosinitiative-production.up.railway.app/kairos/reason';
+  
+    try {
+      const response = await fetch(targetUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+  
+      const data = await response.json();
+      return res.status(200).json(data);
+    } catch (err) {
+      console.error('Proxy error:', err);
+      return res.status(500).json({ error: 'Internal proxy error' });
+    }
   }
-
-  const { mode } = req.query;
-  const body = req.body;
-
-  const backendUrl = process.env.BACKEND_URL || 'https://kairosinitiative-production.up.railway.app';
-  const endpoint = mode === 'reflect'
-    ? `${backendUrl}/kairos/reason`
-    : `${backendUrl}/kairos`;
-
-  try {
-    const kairosRes = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-
-    const data = await kairosRes.json();
-    res.status(kairosRes.status).json(data);
-  } catch (err) {
-    console.error('Kairos Proxy Error:', err);
-    res.status(500).json({ error: 'Kairos Proxy Failed' });
-  }
-}
+  
