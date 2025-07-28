@@ -12,13 +12,8 @@ export default function Home() {
     setLoading(true);
     setResponse('');
 
-    console.log(process.env.NEXT_PUBLIC_API_URL);
-
     try {
-      const endpoint =
-        mode === 'fast'
-          ? `${process.env.NEXT_PUBLIC_API_URL}/kairos`
-          : `${process.env.NEXT_PUBLIC_API_URL}/kairos/reason`;
+      const endpoint = `/api/kairos?mode=${mode}`;
 
       const body = mode === 'fast' ? { message } : { input: message };
 
