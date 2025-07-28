@@ -65,11 +65,10 @@ async def options_kairos_reason():
     })
 
 @app.post("/kairos/reason")
-def reason_through_input(request: ThoughtRequest, response: Response, user_id: str = Cookie(default=None)):
-    if not user_id:
-        user_id = str(uuid4())
-        response.set_cookie(key="user_id", value=user_id, httponly=True)
-        
+def reason_through_input(request: ThoughtRequest, response: Response):
+    user_id = request.user_id or str(uuid4())
+    response.set_cookie(key="user_id", value=user_id, httponly=True)
+    
     result = run_reasoning_loop(request.input, user_id)
     save_interaction(user_id, request.input, result["reflection"])
     return result
