@@ -15,7 +15,12 @@ export default function Home() {
     try {
       const endpoint = `/api/kairos?mode=${mode}`;
 
-      const body = mode === 'fast' ? { message } : { input: message };
+      const user_id = 'public-user'; // временный guest ID, можно потом заменить
+
+      const body =
+        mode === 'fast'
+          ? { message, user_id }
+          : { input: message, user_id };
 
       const res = await fetch(endpoint, {
         method: 'POST',
